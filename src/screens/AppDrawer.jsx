@@ -10,8 +10,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import FolderDelete from '@mui/icons-material/MoveToInbox';
-
-import { Home, } from '@mui/icons-material';
+import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Home from '@mui/icons-material/Home';
+import SendIcon from '@mui/icons-material/Send';
 
 
 import AppBar from '@mui/material/AppBar';
@@ -37,20 +40,28 @@ const AppDrawer = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [drawerState, setDrawerState] = React.useState({
+    left: false,
+  });
+
+  const toggleDrawer = (anchor, open) => {
+    setDrawerState({ ...drawerState, [anchor]: open });
+  };
 
   const handleSelection = (text) => {
-    console.log(JSON.stringify(text))
-    props.toggleParent('left', false)
-    if (text == 'SendMail') {
+
+    toggleDrawer('left', false)
+    if (text == 'Send Mail') {
       navigate('/sendmail')
-    } else if (text == 'settings') {
+    } else if (text == 'Settings') {
       navigate('/settings')
-    } else if (text == 'profile') {
+    } else if (text == 'Profile') {
       navigate('/profile')
     }
 
   }
 
+  const listItems = [{ text: 'Send Mail', icon: 'send' }, { text: 'Settings', icon: 'settings' }, { text: 'Profile', icon: 'profile' }]
 
   const list = (anchor) => (
     <Box
@@ -58,16 +69,16 @@ const AppDrawer = (props) => {
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
       role="presentation"
       //onClick={props.toggleParent(anchor, false)}
-      onKeyDown={props.toggleParent('left', false)}
+      onKeyDown={() => toggleDrawer('left', false)}
     >
       <List>
-        {['SendMail', 'settings', 'profile'].map((text, index) => (
-          <ListItem key={text} disablePadding onClick={() => handleSelection(text)}>
-            <ListItemButton>
+        {listItems.map((item, index) => (
+          <ListItem key={item.text} disablePadding onClick={() => handleSelection(item.text)}>
+            <ListItemButton  >
               <ListItemIcon>
-                {index % 2 === 0 ? <Home /> : <FolderDelete />}
+                {item.icon === 'send' ? <SendIcon /> : item.icon == 'settings' ? <SettingsIcon /> : <AccountCircleIcon />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -81,7 +92,7 @@ const AppDrawer = (props) => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton onClick={props.toggleParent('left', true)}
+            <IconButton onClick={() => toggleDrawer('left', true)}
               size="large"
               edge="start"
               color="inherit"
@@ -93,13 +104,15 @@ const AppDrawer = (props) => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               The App
             </Typography>
+
             <Button
               onClick={() => {
                 dispatch(logout())
                 navigate('/');
               }
               }
-              color="inherit">LogOut</Button>
+              color="inherit">LogOut  <LogoutIcon style={{ paddingLeft: 10 }} /></Button>
+
           </Toolbar>
         </AppBar>
       </Box>
@@ -107,18 +120,13 @@ const AppDrawer = (props) => {
 
         <Drawer
           anchor={'left'}
-          open={props.parentState['left']}
-          onClose={props.toggleParent('left', false)}
+          open={drawerState['left']}
+          onClose={() => toggleDrawer('left', false)}
         >
           {list('left')}
         </Drawer>
 
-        <Routes>
-          <Route path="/" element={<Settings />} />
-          <Route path="/sendmail" element={<SendMail />} />
 
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
       </React.Fragment>
 
     </div>
