@@ -23,35 +23,29 @@ const App = () => {
 
   const isLogin = useSelector(isLoginStatus);
 
-  const [parentState, setParentState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
-
-  const toggleParent = (anchor, open) => (event) => {
-    console.log('Parent toggle called')
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-
-    setParentState({ ...parentState, [anchor]: open });
-  };
-
-
-
 
   return (
     <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={!isLogin ? <AppDrawer toggleParent={toggleParent} parentState={parentState} /> : <Navigate to="/login" />}
-        />
-        <Route path='/signup' element={<RegistrationForm />} />
-        <Route path='/login' element={<SignIn />} />
-      </Routes>
+
+      {
+        !isLogin ? <>
+          <AppDrawer />
+          <Routes>
+            <Route index element={<SendMail />} />
+            <Route path="/sendmail" element={<SendMail />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </> :
+          <>
+            <Routes>
+              <Route index element={<SignIn />} />
+              <Route path='/signup' element={<RegistrationForm />} />
+              <Route path='/login' element={<SignIn />} />
+            </Routes>
+          </>
+      }
+
 
     </Router>
   )
