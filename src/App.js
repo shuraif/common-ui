@@ -67,7 +67,7 @@ const App = () => {
               <Route path="/sendmail" element={<SendMailHome />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/history" element={<History/>} />
+              <Route path="/history" element={<History />} />
             </Routes>
           </> :
             <>

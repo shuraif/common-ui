@@ -15,7 +15,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Home from '@mui/icons-material/Home';
 import SendIcon from '@mui/icons-material/Send';
-
+import HistoryIcon from '@mui/icons-material/History'; 
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -31,7 +31,7 @@ import {
   logout,
   isLoginStatus,
 } from '../redux/counterSlice';
-import SendMail from './SendMail';
+import SendMail from './sendmail/SendMail';
 import Settings from './Settings';
 import Profile from './Profile';
 const AppDrawer = (props) => {
@@ -45,23 +45,27 @@ const AppDrawer = (props) => {
   });
 
   const toggleDrawer = (anchor, open) => {
+    console.log('Parent toggle called')
+    
     setDrawerState({ ...drawerState, [anchor]: open });
   };
 
   const handleSelection = (text) => {
-
-    toggleDrawer('left', false)
+    console.log('closing drawer')
+   // toggleDrawer('left', false)
     if (text == 'Send Mail') {
       navigate('/sendmail')
     } else if (text == 'Settings') {
       navigate('/settings')
     } else if (text == 'Profile') {
       navigate('/profile')
+    }else if(text == 'History'){
+      navigate('/history')
     }
-
+   
   }
 
-  const listItems = [{ text: 'Send Mail', icon: 'send' }, { text: 'Settings', icon: 'settings' }, { text: 'Profile', icon: 'profile' }]
+  const listItems = [{ text: 'Send Mail',icon:'send' },{ text: 'History',icon:'History' }, { text: 'Settings',icon:'settings' }, { text: 'Profile',icon:'profile' }]
 
   const list = (anchor) => (
     <Box
@@ -69,14 +73,14 @@ const AppDrawer = (props) => {
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
       role="presentation"
       //onClick={props.toggleParent(anchor, false)}
-      onKeyDown={() => toggleDrawer('left', false)}
+      onKeyDown={()=>toggleDrawer('left', false)}
     >
       <List>
         {listItems.map((item, index) => (
-          <ListItem key={item.text} disablePadding onClick={() => handleSelection(item.text)}>
-            <ListItemButton  >
+          <ListItem key={item.text} disablePadding onClick={()=>handleSelection(item.text)}>
+            <ListItemButton onClick={()=>toggleDrawer('left', false)} >
               <ListItemIcon>
-                {item.icon === 'send' ? <SendIcon /> : item.icon == 'settings' ? <SettingsIcon /> : <AccountCircleIcon />}
+                {item.icon ==='send'  ? <SendIcon /> :item.icon=='settings'? <SettingsIcon/>:item.icon=='History'?<HistoryIcon/>:<AccountCircleIcon />}
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -92,7 +96,7 @@ const AppDrawer = (props) => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton onClick={() => toggleDrawer('left', true)}
+            <IconButton onClick={()=>toggleDrawer('left', true)}
               size="large"
               edge="start"
               color="inherit"
@@ -104,15 +108,15 @@ const AppDrawer = (props) => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               The App
             </Typography>
-
+           
             <Button
               onClick={() => {
                 dispatch(logout())
                 navigate('/');
               }
               }
-              color="inherit">LogOut  <LogoutIcon style={{ paddingLeft: 10 }} /></Button>
-
+              color="inherit">LogOut  <LogoutIcon style={{paddingLeft:10}}/></Button>
+              
           </Toolbar>
         </AppBar>
       </Box>
@@ -121,7 +125,7 @@ const AppDrawer = (props) => {
         <Drawer
           anchor={'left'}
           open={drawerState['left']}
-          onClose={() => toggleDrawer('left', false)}
+          onClose={()=>toggleDrawer('left', false)}
         >
           {list('left')}
         </Drawer>
